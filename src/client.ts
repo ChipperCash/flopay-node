@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+import axios from 'axios'
 import * as auth from './auth'
 
 export enum ApiVersion {
@@ -15,7 +15,7 @@ export class Client {
   readonly cred: auth.Cred
   private auth: auth.Auth
 
-  constructor(id: string, secret: string) {
+  constructor (id: string, secret: string) {
     this.cred = { id, secret } as auth.Cred
   }
 
@@ -27,7 +27,7 @@ export class Client {
    * @method fromEnv
    * @return {Client}
    */
-  static fromEnv() {
+  static fromEnv () {
     const id = process.env.FLOPAY_CLIENT_ID
     const secret = process.env.FLOPAY_CLIENT_SECRET
     if (id === undefined || secret === undefined) {
@@ -47,14 +47,10 @@ export class Client {
    *
    * @method authorize
    */
-  async authorize() {
-    const req: RequestInit = {
-      method: 'POST',
-      body: new auth.Request(this.cred).toJSONString()
-    }
-    const res = await fetch(this.endpoint(auth.path), req)
-    const json: auth.Response = await res.json()
-    this.auth = new auth.Auth(json)
+  async authorize () {
+    const { data } = await axios.post(this.endpoint(auth.path), new auth.Request(this.cred).serializeJSON())
+    this.auth = new auth.Auth(data as auth.Response)
+    console.log(this.auth)
   }
 
   /**
@@ -62,25 +58,24 @@ export class Client {
    * @param {String} path Path to append to base URL
    * @return {String}
    */
-  endpoint(path: string): string {
+  endpoint (path: string): string {
     return `${Client.baseURL}/${Client.version}/${path}`
   }
 
   /**
-   * Returns true if the client is authorized, and the
+   * True if the client is authorized, and the
    * acquired authorization can be used to make requests.
-   * Returns false otherwise.
+   * False otherwise.
    *
-   * @method isAuthorized
-   * @return {Boolean} True if client is authorized, false otherwise
+   * @property authorized
    */
-  isAuthorized(): boolean {
-    return false
+  get authorized (): boolean {
+    return !!this.auth && !this.auth.expired
   }
 }
 
 export class InvalidCredError extends Error {
-  constructor() {
+  constructor () {
     super(
       `FLOPAY_CLIENT_{ID, SECRET} env vars expected but not found. Please set them and try again. Or use the other constructor that accepts the client id and client secret as arguments.`
     )

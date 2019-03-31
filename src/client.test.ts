@@ -14,7 +14,7 @@ describe('Client', () => {
 
       expect(client.cred.id).toBe(id)
       expect(client.cred.secret).toBe(secret)
-      expect(client.isAuthorized()).toBe(false)
+      expect(client.authorized).toBe(false)
     })
 
     describe('Using FLOPAY_CLIENT_{ID, SECRET} env vars', () => {
@@ -41,8 +41,18 @@ describe('Client', () => {
         const c = Client.fromEnv()
         expect(c.cred.id).toBe('client-id')
         expect(c.cred.secret).toBe('client-secret')
-        expect(c.isAuthorized()).toBe(false)
+        expect(c.authorized).toBe(false)
       })
+    })
+  })
+
+  describe('Authorize', () => {
+    it('successfully authorizes client', async () => {
+      const fc = Client.fromEnv()
+      expect(fc.authorized).toBe(false)
+
+      await fc.authorize()
+      expect(fc.authorized).toBe(true)
     })
   })
 })

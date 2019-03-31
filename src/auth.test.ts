@@ -15,7 +15,7 @@ describe('Auth', () => {
     it('serializes to JSON string', () => {
       const cred = { id: 'client-id', secret: 'client-secret' } as auth.Cred
       const req = new auth.Request(cred)
-      const json = JSON.parse(req.toJSONString())
+      const json = JSON.parse(req.serializeJSON())
 
       expect(json.grant_type).toBe(auth.Request.grantType)
       expect(json.client_id).toBe(req.cred.id)
@@ -43,10 +43,10 @@ describe('Auth', () => {
       expect(a.token).toBe(token)
       expect(a.type).toBe(type)
       expect(a.expires.getTime()).toBe(new Date(acquired * 1000 + 3600).getTime())
-      expect(a.isValid()).toBe(true)
+      expect(a.expired).toBe(false)
     })
 
-    it('invalid after expiry', async () => {
+    it('expiry', async () => {
       const token = 'access-token'
       const type = 'token-type'
       const acquired = Math.floor(new Date().getTime() / 1000)
@@ -63,7 +63,7 @@ describe('Auth', () => {
       await (async () => {
         return new Promise(resolve => setTimeout(resolve, secs * 1000))
       })()
-      expect(a.isValid()).toBe(false)
+      expect(a.expired).toBe(true)
     })
   })
 })

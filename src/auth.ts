@@ -22,10 +22,10 @@ export class Request {
    * Returns a JSON string representation of the
    * Request.
    *
-   * @method toJSONString
+   * @method serializeJSON
    * @return {String} The Request as a JSON string
    */
-  toJSONString (): string {
+  serializeJSON (): string {
     return JSON.stringify({
       grant_type: Request.grantType,
       client_id: this.cred.id,
@@ -60,14 +60,13 @@ export class Auth {
   }
 
   /**
-   * Returns true if the auth's token hasn't expired.
-   * Otherwise it returns false.
+   * True if the auth's token hasn't expired.
+   * False otherwise.
    *
-   * @method isValid
-   * @return {Boolean} Returns true if auth is valid, false otherwise
+   * @property expired
    */
-  isValid (): boolean {
-    return new Date() < this.expires
+  get expired (): boolean {
+    return new Date() >= this.expires
   }
 }
 
