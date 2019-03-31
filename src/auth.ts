@@ -34,6 +34,10 @@ export class Request {
   }
 }
 
+// Response maps onto the structure of the expected
+// JSON response for a successful authentication
+// request to the Flopay v1 API. See https://developer.flopay.io/authentication
+// for more information.
 export interface Response {
   access_token: string
   token_type: string
@@ -41,7 +45,7 @@ export interface Response {
   expires_in: number
 }
 
-//  is a valid authentication/authorization for interacting
+// Auth is a valid authentication/authorization for interacting
 // with the API. According to the documentation, the granted
 // access token is valid for 3600 seconds (1 hour), Thus,
 // `expires` is one hour into the future since the token was
@@ -51,12 +55,21 @@ export class Auth {
   readonly type: string
   readonly expires: Date
 
+  /**
+   * Returns an authentication that can be used by the
+   * Flopay API client. Note that there's not checks to
+   * ensure that it is valid i.e. hasn't expired. This
+   * This means that the client using it should perform
+   * the check before any calls to the API are made.
+   *
+   * @method new
+   * @param {Response} authRes
+   * @return {Auth} Authentication to be used with a client
+   */
   constructor (authRes: Response) {
     this.token = authRes.access_token
     this.type = authRes.token_type
     this.expires = new Date(authRes.created_at * 1000 + authRes.expires_in)
-
-    console.log(this.token, this.type)
   }
 
   /**
