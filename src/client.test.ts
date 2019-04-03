@@ -8,13 +8,27 @@ describe('Client', () => {
 
   describe('Make', () => {
     describe('makes a new client', () => {
-      const id = 'client-id'
-      const secret = 'client-secret'
-      const client = new Client(id, secret)
+      let id: string
+      let secret: string
+      let client: Client
 
-      expect(client.cred.id).toBe(id)
-      expect(client.cred.secret).toBe(secret)
-      expect(client.authorized).toBe(false)
+      beforeEach(() => {
+        id = 'client-id'
+        secret = 'client-secret'
+        client = new Client(id, secret)
+      })
+
+      it('sets the credentials', () => {
+        expect(client.cred.id).toBe(id)
+        expect(client.cred.secret).toBe(secret)
+        expect(client.authorized).toBe(false)
+      })
+
+      it('configures the HTTP transport', () => {
+        expect(client.transport.defaults).toMatchObject({
+          headers: { 'Content-Type': 'application/json; charset=utf-8' }
+        })
+      })
     })
 
     describe('Using FLOPAY_CLIENT_{ID, SECRET} env vars', () => {
@@ -50,9 +64,11 @@ describe('Client', () => {
     it('successfully authorizes client', async () => {
       const fc = new Client('client-id', 'client-secret')
       expect(fc.authorized).toBe(false)
+      expect(fc.transport.defaults.headers['Authorization']).toBeUndefined()
 
       await fc.authorize()
       expect(fc.authorized).toBe(true)
+      expect(fc.transport.defaults.headers['Authorization']).toBe(`Bearer ${fc.accessToken}`)
     })
   })
 

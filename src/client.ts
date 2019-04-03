@@ -13,8 +13,8 @@ export class Client {
   static readonly baseURL: string = 'https://api.flopay.io'
   static readonly version: ApiVersion = ApiVersion.One
   readonly cred: auth.Cred
+  readonly transport: AxiosInstance
   private auth: auth.Auth
-  private transport: AxiosInstance
 
   constructor (id: string, secret: string, timeout = 1000) {
     this.cred = { id, secret } as auth.Cred
@@ -69,6 +69,10 @@ export class Client {
    */
   get authorized (): boolean {
     return !!this.auth && !this.auth.expired
+  }
+
+  get accessToken (): string {
+    return this.auth && this.auth.token
   }
 
   /**
