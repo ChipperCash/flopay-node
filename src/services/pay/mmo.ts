@@ -5,13 +5,12 @@ import { Req } from '../../client'
 export const path = 'transfer.json'
 
 export class Request implements Req {
-  private input: Input
+  private _input: Input
   private _output: Output
   private _raw: object // the raw response received
 
   constructor (input: Input) {
-    this.input = input
-    console.log(this._output)
+    this._input = input
   }
 
   get output (): Output {
@@ -33,7 +32,7 @@ export class Request implements Req {
    * @return {Object}
    */
   get body (): Object {
-    const b = Object.entries(this.input).reduce(
+    const b = Object.entries(this._input).reduce(
       (b, [k, v]) => {
         b[snake(k)] = v
         return b
