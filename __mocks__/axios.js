@@ -1,6 +1,10 @@
-module.exports = {
+const axios = {
+  defaults: {
+    headers: { 'Content-Type': 'application/json; charset=utf-8' }
+  },
+
   post: jest.fn(url => {
-    if (url.endsWith('login')) {
+    if (url === 'login') {
       return Promise.resolve({
         data: {
           access_token: Math.random()
@@ -13,4 +17,10 @@ module.exports = {
       })
     }
   })
+}
+
+module.exports = {
+  create() {
+    return axios
+  }
 }
