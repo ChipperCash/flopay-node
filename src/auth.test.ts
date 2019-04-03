@@ -15,11 +15,11 @@ describe('Auth', () => {
     it('serializes to JSON string', () => {
       const cred = { id: 'client-id', secret: 'client-secret' } as auth.Cred
       const req = new auth.Request(cred)
-      const json = JSON.parse(req.serializeJSON())
+      const json = req.asJSON() as { [s: string]: string }
 
       expect(json.grant_type).toBe(auth.Request.grantType)
-      expect(json.client_id).toBe(req.cred.id)
-      expect(json.client_secret).toBe(req.cred.secret)
+      expect(json.client_id).toBe(cred.id)
+      expect(json.client_secret).toBe(cred.secret)
     })
   })
 

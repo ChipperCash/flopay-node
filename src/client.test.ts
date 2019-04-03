@@ -48,7 +48,7 @@ describe('Client', () => {
 
   describe('Authorize', () => {
     it('successfully authorizes client', async () => {
-      const fc = Client.fromEnv()
+      const fc = new Client('client-id', 'client-secret')
       expect(fc.authorized).toBe(false)
 
       await fc.authorize()

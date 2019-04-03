@@ -18,19 +18,23 @@ export class Request {
     this.cred = cred
   }
 
+  get body (): Object {
+    return this.asJSON()
+  }
+
   /**
    * Returns a JSON string representation of the
    * Request.
    *
-   * @method serializeJSON
-   * @return {String} The Request as a JSON string
+   * @method asJSON
+   * @return {Object} Request, as JSON
    */
-  serializeJSON (): string {
-    return JSON.stringify({
+  asJSON (): Object {
+    return {
       grant_type: Request.grantType,
       client_id: this.cred.id,
       client_secret: this.cred.secret
-    })
+    }
   }
 }
 

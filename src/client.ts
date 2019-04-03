@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { default as axios, AxiosInstance } from 'axios'
 import * as auth from './auth'
 
 export enum ApiVersion {
@@ -14,9 +14,15 @@ export class Client {
   static readonly version: ApiVersion = ApiVersion.One
   readonly cred: auth.Cred
   private auth: auth.Auth
+  private transport: AxiosInstance
 
-  constructor (id: string, secret: string) {
+  constructor (id: string, secret: string, timeout = 1000) {
     this.cred = { id, secret } as auth.Cred
+    this.transport = axios.create({
+      baseURL: `${Client.baseURL}/${Client.version}/`,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      timeout
+    })
   }
 
   /**
@@ -48,18 +54,10 @@ export class Client {
    * @method authorize
    */
   async authorize () {
-    const { data } = await axios.post(this.endpoint(auth.path), new auth.Request(this.cred).serializeJSON())
+    const req = new auth.Request(this.cred)
+    const { data } = await this.transport.post(auth.path, { data: req.body })
     this.auth = new auth.Auth(data as auth.Response)
-    console.log(this.auth)
-  }
-
-  /**
-   * @method endpoint
-   * @param {String} path Path to append to base URL
-   * @return {String}
-   */
-  endpoint (path: string): string {
-    return `${Client.baseURL}/${Client.version}/${path}`
+    this.transport.defaults.headers['Authorization'] = `Bearer ${this.auth.token}`
   }
 
   /**
@@ -72,6 +70,31 @@ export class Client {
   get authorized (): boolean {
     return !!this.auth && !this.auth.expired
   }
+
+  /**
+   * Performs a request and sets the response received
+   * on the given request.
+   * @method do
+   * @param {String} to Relative endpoint
+   * @param {Req} req The request to perform
+   */
+  async do (req: Req) {
+    if (!this.authorized) {
+      // Looks like our current authorization is no longer good.
+      // Getting a new one before making the request.
+      await this.authorize()
+    }
+
+    const { to, body } = req
+    const { data } = await this.transport.post(to, { data: body })
+    req.response = data
+  }
+}
+
+export interface Req {
+  to: string // endpoint
+  body: string // request body, as JSON
+  response: object // request response, as JSON
 }
 
 export class InvalidCredError extends Error {
