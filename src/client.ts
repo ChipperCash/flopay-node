@@ -91,10 +91,14 @@ export class Client {
   }
 }
 
+// Req is any request that can be performed by the client.
+// It specific the endpoint (as relative path), the body
+// as an Object, and waits for the response to be set
+// after the request has been performed.
 export interface Req {
   to: string // endpoint
-  body: string // request body, as JSON
-  response: object // request response, as JSON
+  body: { [k: string]: any } // request body, as JSON
+  response?: { [k: string]: any } // request response, as JSON
 }
 
 export class InvalidCredError extends Error {

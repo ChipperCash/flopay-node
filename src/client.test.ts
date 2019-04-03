@@ -1,4 +1,4 @@
-import { Client, ApiVersion, InvalidCredError } from './client'
+import { Client, ApiVersion, InvalidCredError, Req } from './client'
 
 describe('Client', () => {
   it('statics', async () => {
@@ -53,6 +53,42 @@ describe('Client', () => {
 
       await fc.authorize()
       expect(fc.authorized).toBe(true)
+    })
+  })
+
+  describe('Do', () => {
+    let client: Client
+
+    beforeEach(() => {
+      client = new Client('client-id', 'client-secret')
+    })
+
+    it('performs the request', async () => {
+      const req: Req = {
+        to: 'path',
+        body: {
+          string: 'one',
+          number: 2,
+          array: [1, 2, 3],
+          object: {}
+        } as { [k: string]: any }
+      }
+
+      await client.do(req)
+      expect(req.response).toEqual(req.body)
+    })
+
+    it('renews auth token before call', async () => {
+      const client = new Client('client-id', 'client-secret')
+      expect(client.authorized).toBe(false)
+
+      await client.do({
+        to: 'path',
+        body: {}
+      } as Req)
+
+      // client's authorization was renewed
+      expect(client.authorized).toBe(true)
     })
   })
 })

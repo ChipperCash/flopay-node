@@ -1,9 +1,10 @@
 import camelize from 'lodash.camelcase'
 import snake from 'lodash.snakecase'
+import { Req } from '../../client'
 
 export const path = 'transfer.json'
 
-export class Request {
+export class Request implements Req {
   private input: Input
   private _output: Output
   private _raw: object // the raw response received
