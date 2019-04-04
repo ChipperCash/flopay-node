@@ -42,7 +42,7 @@ describe('Auth', () => {
       const a = new auth.Auth(res)
       expect(a.token).toBe(token)
       expect(a.type).toBe(type)
-      expect(a.expires.getTime()).toBe(new Date(acquired * 1000 + 3600).getTime())
+      expect(a.expires.getTime()).toBe(new Date(acquired * 1000 + 3600 * 1000).getTime())
       expect(a.expired).toBe(false)
     })
 

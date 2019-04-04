@@ -7,49 +7,56 @@ export const path = 'transfer.json'
 export class Request implements Req {
   private _input: Input
   private _output: Output
-  private _raw: object // the raw response received
+  private _raw: { [k: string]: any } // the raw response received
 
   constructor (input: Input) {
     this._input = input
   }
 
+  /**
+   * @property output
+   */
   get output (): Output {
     return this._output
   }
 
+  /**
+   * @property to
+   */
   get to (): string {
     return path
-  }
-
-  get response (): object {
-    return this._raw
   }
 
   /**
    * Returns JSON object of the request's input, ready
    * to be sent as the body of an HTTP request.
    *
-   * @return {Object}
+   * @property body
    */
   get body (): Object {
-    const b = Object.entries(this._input).reduce(
+    return Object.entries(this._input).reduce(
       (b, [k, v]) => {
         b[snake(k)] = v
         return b
       },
       {} as { [s: string]: any }
     )
+  }
 
-    return b
+  /**
+   * @property response
+   */
+  get response (): object {
+    return this._raw
   }
 
   /**
    * Sets the output of the request.
    * The response received after performing the request is
-   * converted to the expected output type. It als sets the
+   * converted to the expected output type. It also sets the
    * raw response that was received.
    *
-   * @param {Object} data Response
+   * @param {object} data Response
    */
   set response (data: object) {
     this._raw = data
@@ -83,11 +90,11 @@ export interface Input {
   countryCode: string // Country code of sender, for e.g. GHS
   serviceCode: string // The kind of payment modes/services provided in the country, e.g. cashin
 
-  // optionals
-  reference?: string // A reference code that uniquely identifies this transaction to the client
+  // optional
+  reference?: string // Alphanumeric, uniquely identifies transaction to client
   callbackURLs?: string[] // Allows to customize callbacks per request. Defaults to global if none given
   recipientName?: string // Name of the recipient or description of the transaction
-  provider?: string // Mobile Money Operator of the recipient. Due to porting it's a good idea to specify.
+  provider?: string // Mobile Money Operator of the recipient. Due to porting it's a good idea to specify
   live?: boolean // Production?
 }
 

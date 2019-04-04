@@ -55,7 +55,7 @@ export class Client {
    */
   async authorize () {
     const req = new auth.Request(this.cred)
-    const { data } = await this.transport.post(auth.path, { data: req.body })
+    const { data } = await this.transport.post(auth.path, req.body)
     this.auth = new auth.Auth(data as auth.Response)
     this.transport.defaults.headers['Authorization'] = `Bearer ${this.auth.token}`
   }

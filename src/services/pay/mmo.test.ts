@@ -1,18 +1,18 @@
 import { Input, Request, path } from './mmo'
 
-describe('MMO', () => {
+describe('Pay MMO', () => {
   describe('Request', () => {
     let req: Request
     let input: Input
 
-    let amt = Math.round(Math.random() * 100)
-    let cur = 'GHS'
-    let rno = '+233123456789'
-    let rfn = 'Junior Konadu'
-    let cco = 'GH'
-    let sco = 'cashin'
-    let prv = 'MTN'
-    let ref = Math.random().toString(36)
+    let amt: number
+    let cur: string
+    let rno: string
+    let rfn: string
+    let cco: string
+    let sco: string
+    let prv: string
+    let ref: string
 
     beforeEach(() => {
       amt = Math.round(Math.random() * 100)

@@ -73,7 +73,7 @@ export class Auth {
   constructor (authRes: Response) {
     this.token = authRes.access_token
     this.type = authRes.token_type
-    this.expires = new Date(authRes.created_at * 1000 + authRes.expires_in)
+    this.expires = new Date(authRes.created_at * 1000 + authRes.expires_in * 1000)
   }
 
   /**
