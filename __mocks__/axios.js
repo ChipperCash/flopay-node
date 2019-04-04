@@ -17,7 +17,7 @@ const axios = {
       })
     } else {
       // Otherwise echo the request
-      return data
+      return { data }
     }
   })
 }

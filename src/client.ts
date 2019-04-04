@@ -90,7 +90,7 @@ export class Client {
     }
 
     const { to, body } = req
-    const { data } = await this.transport.post(to, { data: body })
+    const { data } = await this.transport.post(to, body)
     req.response = data
   }
 }
