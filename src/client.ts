@@ -77,7 +77,12 @@ export class Client {
 
   /**
    * Performs a request and sets the response received
-   * on the given request.
+   * on the given request. Sometimes (roughly hourly),
+   * these call will take slightly longer because the
+   * client re-authorizes (acquires a new token). Hopefully
+   * this shouldn't be noticeable. But if it is then
+   * maybe we can get rid of the compulsory renewal.
+   *
    * @method do
    * @param {String} to Relative endpoint
    * @param {Req} req The request to perform
@@ -85,7 +90,7 @@ export class Client {
   async do (req: Req) {
     if (!this.authorized) {
       // Looks like our current authorization is no longer good.
-      // Getting a new one before making the request.
+      // Getting a new one before making the request. Not slow.
       await this.authorize()
     }
 

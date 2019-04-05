@@ -5,7 +5,7 @@
   "main": "index.ts",
   "repository": "https://github.com/chippercash/flopay-node",
   "author": "Chipper Engineering <engineering@chipper.cash>",
-  "license": "MIT",
+  "license": "GPL-2.0-only",
   "private": false,
   "scripts": {
     "test": ". env/test.env && yarn run lint && node_modules/.bin/jest --all --coverage",
