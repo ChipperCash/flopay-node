@@ -3,6 +3,9 @@
   "version": "0.0.2",
   "description": "Unofficial Node SDK for the Flopay API",
   "main": "lib/index.js",
+  "files": [
+    "lib/**/*"
+  ],
   "types": "lib/index.d.ts",
   "repository": "https://github.com/chippercash/flopay-node",
   "author": "Chipper Engineering <engineering@chipper.cash>",
