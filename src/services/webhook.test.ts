@@ -20,7 +20,7 @@ describe('Webhook', () => {
         status: 'failed',
         service_code: 'cashout',
         provider_code: 'MTN',
-        reference: '0.p0t4kp65ch',
+        reference: 'TEST--83d2bb04-a049-4f1e-b232-699fe4fbeca0',
         remarks: 'Payment queued successfully',
         charged_amount: '0.01',
         net_amount: '0.99',
@@ -33,11 +33,13 @@ describe('Webhook', () => {
     }
 
     it('works', () => {
-      const webh = new Webhook(wd)
-      const eventName = webh.eventName
-      const client = webh.client as Client
-      const transaction = webh.transaction as Transaction
+      const webhook = new Webhook(wd)
+      const eventName = webhook.eventName
+      const client = webhook.client as Client
+      const transaction = webhook.transaction as Transaction
 
+      expect(webhook.succeeded).toBe(false)
+      expect(webhook.type).toBe('cashout')
       expect(eventName).toBe(wd.event_name)
 
       expect(client.till).toBe(wd.client.till)

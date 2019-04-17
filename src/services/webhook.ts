@@ -30,7 +30,7 @@ export interface Transaction {
   date: string // date of the transaction, e.g. "16 Apr 2019"
   time: string // time of the transaction, e.g. "18:48:31"
   status: string // status of the transaction, e.g. "failed"
-  serviceCode: string // service code, that is "cashout"
+  serviceCode: string // service code, i.e. "cashout" or "cashin"
   providerCode: string // code of the customer's Mobile Money Operator
   reference: string // reference that was set on the original request
   remarks: string // Comment on transaction status
@@ -52,6 +52,20 @@ export class Webhook {
     this.eventName = wd.event_name
     this.client = wd.client
     this.transaction = wd.transaction
+  }
+
+  /**
+   * @property {String} type
+   */
+  get type (): string {
+    return this._transaction.serviceCode
+  }
+
+  /**
+   * @property {Boolean} succeeded
+   */
+  get succeeded (): boolean {
+    return this._transaction.status === 'paid' && !!this._transaction.success
   }
 
   /**
