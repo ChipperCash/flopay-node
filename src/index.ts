@@ -1,5 +1,4 @@
 import { Client } from './client'
-import pay from './services/pay'
-import receive from './services/receive'
+import { pay, receive, Webhook } from './services'
 
-export { Client, pay, receive }
+export { Client, pay, receive, Webhook }
