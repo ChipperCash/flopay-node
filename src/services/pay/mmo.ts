@@ -105,11 +105,6 @@ export interface Output {
   response: Response
 }
 
-// WebhookResponse represents the structure of the payload
-// received for a successfully initiated Mobile Money payment
-// request.
-export interface WebhookResponse {}
-
 // Response maps onto the structure of the expected
 // JSON response for both failed and successful MMO
 // operation. See https://developer.flopay.io/pay-out/mobile-wallet
