@@ -16,7 +16,7 @@ export class Client {
   readonly transport: AxiosInstance
   private auth: auth.Auth
 
-  constructor (id: string, secret: string, timeout = 1000) {
+  constructor (id: string, secret: string, timeout = 2000) {
     this.cred = { id, secret } as auth.Cred
     this.transport = axios.create({
       baseURL: `${Client.baseURL}/${Client.version}/`,

@@ -1,4 +1,4 @@
-import { Input, Request, path } from './mmo'
+import { Input, InvalidInputError, Request, path } from './mmo'
 
 describe('Receive MMO', () => {
   describe('Request', () => {
@@ -60,6 +60,24 @@ describe('Receive MMO', () => {
       })
 
       expect(req.to).toBe(path)
+    })
+
+    it('fails if provider is vodafone and voucher is not provided', () => {
+      const input = {
+        amount: amt,
+        currency: cur,
+        customerNo: cno,
+        countryCode: cco,
+        reference: ref,
+        provider: 'vodafone',
+
+        customerName: pfn,
+        remarks: rem,
+        scheduleDate: sde,
+        scheduleTime: ste
+      } as Input
+
+      expect(() => new Request(input)).toThrowError(InvalidInputError)
     })
 
     it('sets response', () => {
