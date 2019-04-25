@@ -1,4 +1,4 @@
-import { Input, InvalidInputError, Request, path } from './mmo'
+import { Input, InvalidInputError, Request } from './mmo'
 
 describe('Receive MMO', () => {
   describe('Request', () => {
@@ -59,7 +59,8 @@ describe('Receive MMO', () => {
         service_code: 'cashout'
       })
 
-      expect(req.to).toBe(path)
+      expect(req.to).toBe('receive.json')
+      expect(req.method).toBe('POST')
     })
 
     it('fails if provider is vodafone and voucher is not provided', () => {

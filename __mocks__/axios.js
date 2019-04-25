@@ -19,6 +19,10 @@ const axios = {
       // Otherwise echo the request
       return { data }
     }
+  }),
+
+  get: jest.fn((url, config) => {
+    return { data: config.params || {} }
   })
 }
 

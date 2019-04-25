@@ -2,8 +2,6 @@ import camelize from 'lodash.camelcase'
 import snake from 'lodash.snakecase'
 import { Req } from '../../client'
 
-export const path = 'transfer.json'
-
 export class Request implements Req {
   private _input: Input
   private _output: Output
@@ -21,10 +19,22 @@ export class Request implements Req {
   }
 
   /**
+   * The relative URL endpoint to use when
+   * performing the request.
+   *
    * @property to
    */
   get to (): string {
-    return path
+    return 'transfer.json'
+  }
+
+  /**
+   * The HTTP method to use when performing the request.
+   *
+   * @property method
+   */
+  get method (): string {
+    return 'POST'
   }
 
   /**

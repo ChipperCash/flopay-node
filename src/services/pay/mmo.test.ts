@@ -1,4 +1,4 @@
-import { Input, Request, path } from './mmo'
+import { Input, Request } from './mmo'
 
 describe('Pay MMO', () => {
   describe('Request', () => {
@@ -56,7 +56,8 @@ describe('Pay MMO', () => {
         live: true
       })
 
-      expect(req.to).toBe(path)
+      expect(req.to).toBe('transfer.json')
+      expect(req.method).toBe('POST')
     })
 
     it('sets response', () => {

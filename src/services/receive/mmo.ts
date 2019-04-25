@@ -2,8 +2,6 @@ import camelize from 'lodash.camelcase'
 import snake from 'lodash.snakecase'
 import { Req } from '../../client'
 
-export const path = 'receive.json'
-
 export class Request implements Req {
   private _input: Input
   private _output: Output
@@ -18,10 +16,22 @@ export class Request implements Req {
   }
 
   /**
-   * @property
+   * The relative URL endpoint to use when
+   * performing the request.
+   *
+   * @property to
    */
   get to (): string {
-    return path
+    return 'receive.json'
+  }
+
+  /**
+   * The HTTP method to use when performing the request.
+   *
+   * @property method
+   */
+  get method (): string {
+    return 'POST'
   }
 
   /**
@@ -125,6 +135,9 @@ export interface Response {
   message: string
 }
 
+// InvalidInputError is the exception thrown
+// when the given input for a request doesn't
+// pass the validation.
 export class InvalidInputError extends Error {
   constructor (message: string) {
     super(message)

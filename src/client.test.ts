@@ -79,19 +79,37 @@ describe('Client', () => {
       client = new Client('client-id', 'client-secret')
     })
 
-    it('performs the request', async () => {
-      const req: Req = {
-        to: 'path',
-        body: {
-          string: 'one',
-          number: 2,
-          array: [1, 2, 3],
-          object: {}
-        } as { [k: string]: any }
-      }
+    describe('Methods', () => {
+      describe('POST', () => {
+        it('performs the request', async () => {
+          const req: Req = {
+            to: 'path',
+            method: 'POST',
+            body: {
+              string: 'one',
+              number: 2,
+              array: [1, 2, 3],
+              object: {}
+            } as { [k: string]: any }
+          }
 
-      await client.do(req)
-      expect(req.response).toEqual(req.body)
+          await client.do(req)
+          expect(req.response).toEqual(req.body)
+        })
+      })
+
+      describe('GET', () => {
+        it('performs the request', async () => {
+          const req: Req = {
+            to: 'path',
+            method: 'GET',
+            body: { query: 'param' }
+          }
+
+          await client.do(req)
+          expect(req.response).toEqual(req.body)
+        })
+      })
     })
 
     it('renews auth token before call', async () => {
@@ -100,6 +118,7 @@ describe('Client', () => {
 
       await client.do({
         to: 'path',
+        method: 'POST',
         body: {}
       } as Req)
 

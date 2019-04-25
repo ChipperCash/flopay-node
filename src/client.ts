@@ -94,9 +94,20 @@ export class Client {
       await this.authorize()
     }
 
-    const { to, body } = req
-    const { data } = await this.transport.post(to, body)
-    req.response = data
+    const { method, to, body } = req
+    switch (method) {
+      case 'POST': {
+        const { data } = await this.transport.post(to, body)
+        req.response = data
+        break
+      }
+
+      case 'GET': {
+        const { data } = await this.transport.get(to, { params: body })
+        req.response = data
+        break
+      }
+    }
   }
 }
 
@@ -105,6 +116,7 @@ export class Client {
 // as an Object, and waits for the response to be set
 // after the request has been performed.
 export interface Req {
+  method: string // HTTP method
   to: string // endpoint
   body: { [k: string]: any } // request body, as JSON
   response?: { [k: string]: any } // request response, as JSON
