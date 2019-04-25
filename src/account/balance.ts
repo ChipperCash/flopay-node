@@ -1,12 +1,12 @@
 import snake from 'lodash.snakecase'
 
-export interface Input {}
-export interface Output {
+interface Input {}
+interface Output {
   success: boolean
   accounts: Account[]
 }
 
-export interface Account {
+interface Account {
   type: string
   balance: number
   overdraft: number
@@ -101,3 +101,5 @@ export class Request {
     return this._output
   }
 }
+
+export default { Request }
