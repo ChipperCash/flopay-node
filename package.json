@@ -1,6 +1,6 @@
 {
   "name": "flopay-node",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Unofficial Node SDK for the Flopay API",
   "main": "lib/index.js",
   "files": [
