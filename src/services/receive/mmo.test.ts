@@ -38,7 +38,8 @@ describe('Receive MMO', () => {
         customerName: pfn,
         remarks: rem,
         scheduleDate: sde,
-        scheduleTime: ste
+        scheduleTime: ste,
+        callbackURLs: ['https://example.org']
       } as Input
 
       req = new Request(input)
@@ -56,7 +57,8 @@ describe('Receive MMO', () => {
         remarks: rem,
         schedule_date: sde,
         schedule_time: ste,
-        service_code: 'cashout'
+        service_code: 'cashout',
+        callback_urls: ['https://example.org']
       })
 
       expect(req.to).toBe('receive.json')

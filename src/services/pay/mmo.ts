@@ -46,7 +46,13 @@ export class Request implements Req {
   get body (): Object {
     return Object.entries(this._input).reduce(
       (b, [k, v]) => {
-        b[snake(k)] = v
+        if (k === 'callbackURLs') {
+          // `lodash.snakecase` can't handle this key
+          // properly.
+          b['callback_urls'] = v
+        } else {
+          b[snake(k)] = v
+        }
         return b
       },
       {} as { [s: string]: any }

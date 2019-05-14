@@ -35,7 +35,8 @@ describe('Pay MMO', () => {
         reference: ref,
         recipientName: rfn,
         provider: prv,
-        live: true
+        live: true,
+        callbackURLs: ['https://chipper.cash/callback']
       } as Input
 
       req = new Request(input)
@@ -53,7 +54,8 @@ describe('Pay MMO', () => {
         reference: ref,
         recipient_name: rfn,
         provider: prv,
-        live: true
+        live: true,
+        callback_urls: ['https://chipper.cash/callback']
       })
 
       expect(req.to).toBe('transfer.json')
