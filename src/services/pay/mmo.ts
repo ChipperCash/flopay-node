@@ -1,4 +1,3 @@
-import camelize from 'lodash.camelcase'
 import snake from 'lodash.snakecase'
 import { Req } from '../../client'
 
@@ -62,7 +61,7 @@ export class Request implements Req {
   /**
    * @property response
    */
-  get response (): object {
+  get response (): { [k: string]: any } {
     return this._raw
   }
 
@@ -74,17 +73,37 @@ export class Request implements Req {
    *
    * @param {object} data Response
    */
-  set response (data: object) {
+  set response (data: { [k: string]: any }) {
     this._raw = data
-    const o = Object.entries(data).reduce(
-      (o, [k, v]) => {
-        o[camelize(k)] = v
-        return o
-      },
-      {} as { [k: string]: any }
-    )
+    this.handleError(data)
 
-    this._output = o as Output
+    const { reference, provider, recipient, amount, currency, message } = data.response
+    this._output = {
+      success: true,
+      response: {
+        reference,
+        provider,
+        recipient,
+        amount,
+        currency,
+        message
+      }
+    }
+  }
+
+  handleError (data: { [k: string]: any }) {
+    if (data.success === false) {
+      const { message_type: type, message } = data.response
+      switch (type) {
+        case 'invalid_customer_num': {
+          throw new InvalidCustomerNumber(message)
+        }
+
+        default: {
+          throw new Error(`unknown error type: ${type}, with message ${message}`)
+        }
+      }
+    }
   }
 }
 
@@ -122,8 +141,8 @@ export interface Output {
 }
 
 // Response maps onto the structure of the expected
-// JSON response for both failed and successful MMO
-// operation. See https://developer.flopay.io/pay-out/mobile-wallet
+// JSON response for successful MMO operation.
+// See https://developer.flopay.io/pay-out/mobile-wallet
 // for more information.
 export interface Response {
   reference: string
@@ -132,4 +151,13 @@ export interface Response {
   amount: number
   currency: string
   message: string
+}
+
+// InvalidCustomerNumber is the exception thrown
+// when the customer's number (aka Mobile Money
+// account number) is invalid.
+export class InvalidCustomerNumber extends Error {
+  constructor (message: string) {
+    super(message)
+  }
 }

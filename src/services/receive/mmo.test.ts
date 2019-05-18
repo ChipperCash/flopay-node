@@ -1,4 +1,4 @@
-import { Input, InvalidInputError, Request } from './mmo'
+import { Input, Request, MissingVoucherError, InvalidVoucherError } from './mmo'
 
 describe('Receive MMO', () => {
   describe('Request', () => {
@@ -80,7 +80,7 @@ describe('Receive MMO', () => {
         scheduleTime: ste
       } as Input
 
-      expect(() => new Request(input)).toThrowError(InvalidInputError)
+      expect(() => new Request(input)).toThrowError(MissingVoucherError)
     })
 
     it('sets response', () => {
@@ -99,6 +99,41 @@ describe('Receive MMO', () => {
       req.response = res
       expect(req.response).toEqual(res)
       expect(req.output).toEqual(res)
+    })
+
+    describe('InvalidVoucherError', () => {
+      it('throws for invalid voucher', () => {
+        const req = new Request(input)
+        const res = {
+          success: false,
+          response: {
+            message_type: 'error',
+            error_type: 'invalid_voucher',
+            message: 'Voucher number is required'
+          }
+        }
+        expect(() => {
+          req.response = res
+        }).toThrow(InvalidVoucherError)
+      })
+    })
+
+    describe('Generic Error', () => {
+      it('for unknown error type', () => {
+        const req = new Request(input)
+        const res = {
+          success: false,
+          response: {
+            message_type: 'error',
+            error_type: 'unknown_type',
+            message: 'Unknown error type'
+          }
+        }
+
+        expect(() => {
+          req.response = res
+        }).toThrow(Error)
+      })
     })
   })
 })

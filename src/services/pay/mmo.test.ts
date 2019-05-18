@@ -1,4 +1,4 @@
-import { Input, Request } from './mmo'
+import { Input, InvalidCustomerNumber, Request } from './mmo'
 
 describe('Pay MMO', () => {
   describe('Request', () => {
@@ -17,7 +17,7 @@ describe('Pay MMO', () => {
     beforeEach(() => {
       amt = Math.round(Math.random() * 100)
       cur = 'GHS'
-      rno = '+233123456789'
+      rno = '0123456789'
       rfn = 'Junior Konadu'
       cco = 'GH'
       sco = 'cashin'
@@ -78,6 +78,38 @@ describe('Pay MMO', () => {
       req.response = res
       expect(req.response).toEqual(res)
       expect(req.output).toEqual(res)
+    })
+
+    describe('Invalid customer number', () => {
+      it('throws InvalidCustomerNumber', () => {
+        const req = new Request(input)
+        const res = {
+          success: false,
+          response: {
+            message_type: 'invalid_customer_num',
+            message: `The recipient number is invalid, ${input.recipientNo} is not a valid number.`
+          }
+        }
+
+        expect(() => {
+          req.response = res
+        }).toThrowError(InvalidCustomerNumber)
+      })
+
+      it('throws generic error for unknown message type', () => {
+        const req = new Request(input)
+        const res = {
+          success: false,
+          response: {
+            message_type: 'unknown_type',
+            message: 'unknown error type'
+          }
+        }
+
+        expect(() => {
+          req.response = res
+        }).toThrow(Error)
+      })
     })
   })
 })

@@ -1,4 +1,3 @@
-import camelize from 'lodash.camelcase'
 import snake from 'lodash.snakecase'
 import { Req } from '../../client'
 
@@ -9,7 +8,7 @@ export class Request implements Req {
 
   constructor (input: Input) {
     if (input.provider === 'vodafone' && input.voucher === undefined) {
-      throw new InvalidInputError(`voucher is required when provider is Vodafone`)
+      throw new MissingVoucherError(input.provider)
     }
 
     this._input = input
@@ -51,8 +50,7 @@ export class Request implements Req {
     return Object.entries(this._input).reduce(
       (b, [k, v]) => {
         if (k === 'callbackURLs') {
-          // `lodash.snakecase` can't handle this key
-          // properly.
+          // `lodash.snakecase` can't handle this key properly.
           b['callback_urls'] = v
         } else {
           b[snake(k)] = v
@@ -66,7 +64,7 @@ export class Request implements Req {
   /**
    * @property
    */
-  get response (): object {
+  get response (): { [k: string]: any } {
     return this._raw
   }
 
@@ -78,17 +76,37 @@ export class Request implements Req {
    *
    * @param {object} data Response
    */
-  set response (data: object) {
+  set response (data: { [k: string]: any }) {
     this._raw = data
-    const o = Object.entries(data).reduce(
-      (o, [k, v]) => {
-        o[camelize(k)] = v
-        return o
-      },
-      {} as { [k: string]: any }
-    )
+    this.handleError(data)
 
-    this._output = o as Output
+    const { reference, provider, recipient, amount, currency, message } = data.response
+    this._output = {
+      success: true,
+      response: {
+        reference,
+        provider,
+        recipient,
+        amount,
+        currency,
+        message
+      }
+    }
+  }
+
+  handleError (data: { [k: string]: any }) {
+    if (data.success === false) {
+      const { error_type: type, error_message: message } = data.response
+      switch (type) {
+        case 'invalid_voucher': {
+          throw new InvalidVoucherError()
+        }
+
+        default: {
+          throw new Error(`unknown error type: ${type}, with message: ${message}`)
+        }
+      }
+    }
   }
 }
 
@@ -129,8 +147,8 @@ export interface Output {
 }
 
 // Response maps onto the structure of the expected
-// JSON response for both failed and successful
-// requests. See https://developer.flopay.io/accept-payment/mobile-wallet
+// JSON response for successful requests.
+// See https://developer.flopay.io/accept-payment/mobile-wallet
 // for more information.
 export interface Response {
   reference: string
@@ -141,11 +159,18 @@ export interface Response {
   message: string
 }
 
-// InvalidInputError is the exception thrown
-// when the given input for a request doesn't
-// pass the validation.
-export class InvalidInputError extends Error {
-  constructor (message: string) {
-    super(message)
+// Missing
+export class MissingVoucherError extends Error {
+  constructor (provider: string) {
+    super(`voucher is required when provider is ${provider}`)
+  }
+}
+
+// InvalidVoucherError is the exception thrown
+// when the given voucher (for transactions that require
+// a voucher) is wrong.
+export class InvalidVoucherError extends Error {
+  constructor () {
+    super('Voucher number is required')
   }
 }
