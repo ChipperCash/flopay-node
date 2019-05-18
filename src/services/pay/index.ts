@@ -1,2 +1,2 @@
-import { Request } from './mmo'
-export default { Request }
+import { Request, InvalidCustomerNumber } from './mmo'
+export default { Request, InvalidCustomerNumber }
