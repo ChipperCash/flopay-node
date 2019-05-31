@@ -93,15 +93,13 @@ export class Request implements Req {
 
   handleError (data: { [k: string]: any }) {
     if (data.success === false) {
-      const { message_type: type, message } = data.response
-      switch (type) {
-        case 'invalid_customer_num': {
-          throw new InvalidCustomerNumber(message)
-        }
+      const type = data.response.message_type || data.response.error_type
+      const message = data.response.message || data.response.error_message
 
-        default: {
-          throw new Error(`unknown error type: ${type}, with message ${message}`)
-        }
+      switch (type) {
+        case 'invalid_customer_num': throw new InvalidCustomerNumber(message)
+        case 'exceeded_daily_limit': throw new ExceededDailyLimit(message)
+        default: throw new Error(`unknown error type: ${type}, with message ${message}`)
       }
     }
   }
@@ -157,6 +155,15 @@ export interface Response {
 // when the customer's number (aka Mobile Money
 // account number) is invalid.
 export class InvalidCustomerNumber extends Error {
+  constructor (message: string) {
+    super(message)
+  }
+}
+
+// ExceededDailyLimit is the exception thrown
+// when the customer has exceeded their daily
+// wallet limit.
+export class ExceededDailyLimit extends Error {
   constructor (message: string) {
     super(message)
   }

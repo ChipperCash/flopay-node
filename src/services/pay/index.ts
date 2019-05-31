@@ -1,6 +1,7 @@
-import { Request, InvalidCustomerNumber } from './mmo'
+import { Request, InvalidCustomerNumber, ExceededDailyLimit } from './mmo'
 
 export default {
   Request,
-  InvalidCustomerNumber
+  InvalidCustomerNumber,
+  ExceededDailyLimit
 }

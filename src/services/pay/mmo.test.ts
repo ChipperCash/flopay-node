@@ -1,4 +1,4 @@
-import { Input, InvalidCustomerNumber, Request } from './mmo'
+import { Input, InvalidCustomerNumber, ExceededDailyLimit, Request } from './mmo'
 
 describe('Pay MMO', () => {
   describe('Request', () => {
@@ -80,7 +80,7 @@ describe('Pay MMO', () => {
       expect(req.output).toEqual(res)
     })
 
-    describe('Invalid customer number', () => {
+    describe('invalid_customer_num', () => {
       it('throws InvalidCustomerNumber', () => {
         const req = new Request(input)
         const res = {
@@ -109,6 +109,23 @@ describe('Pay MMO', () => {
         expect(() => {
           req.response = res
         }).toThrow(Error)
+      })
+    })
+
+    describe('exceeded_daily_limit', () => {
+      it('throws ExceededDailyLimit', () => {
+        const req = new Request(input)
+        const res = {
+          success: false,
+          response: {
+            error_type: 'exceeded_daily_limit',
+            error_message: 'You have exceeded your daily limit.'
+          }
+        }
+
+        expect(() => {
+          req.response = res
+        }).toThrowError(ExceededDailyLimit)
       })
     })
   })
