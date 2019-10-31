@@ -62,7 +62,7 @@ export class Auth {
   /**
    * Returns an authentication that can be used by the
    * Flopay API client. Note that there's not checks to
-   * ensure that it is valid i.e. hasn't expired. This
+   * ensure that it is valid i.e. hasn't expired.
    * This means that the client using it should perform
    * the check before any calls to the API are made.
    *
@@ -77,7 +77,7 @@ export class Auth {
   }
 
   /**
-   * True if the auth's token hasn't expired.
+   * True if the auth's token has expired.
    * False otherwise.
    *
    * @property expired
